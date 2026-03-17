@@ -26,7 +26,7 @@
 
 The NAFDAC Drug Verification System is an enterprise-grade application that helps consumers and healthcare professionals verify the authenticity of pharmaceutical products registered with Nigeria's National Agency for Food and Drug Administration and Control (NAFDAC). The system provides real-time verification through image recognition or manual NAFDAC number entry, with comprehensive product details and registration status.
 
-**Live Demo**: [nafdac.echefulouis.com](nafdac.echefulouis.com)
+**Live Demo**: [nafdac.echefulouis.com](https://nafdac.echefulouis.com/)
 
 <div align="center">
   <img src=".docs/image.png" alt="Frontend Application" width="600" style="border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
