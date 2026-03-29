@@ -16,6 +16,7 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 logger = Logger()
 
 dynamodb = boto3.resource('dynamodb')
+cloudwatch_client = boto3.client('cloudwatch')
 VERIFICATION_TABLE = os.environ['VERIFICATION_TABLE_NAME']
 table = dynamodb.Table(VERIFICATION_TABLE)
 
@@ -164,13 +165,21 @@ def scrape_nafdac_greenbook(nafdac_number: str = None, product_name: str = None)
 
 
 def store_verification_result(verification_id: str, timestamp: str, image_key: str, 
-                              nafdac_number: str, validation_result: dict) -> None:
+                              nafdac_number: str, validation_result: dict,
+                              geolocation: dict = None) -> None:
     """Store verification result in DynamoDB"""
+    geo_data = geolocation or {}
     item = {
         'verificationId': verification_id,
         'timestamp': timestamp,
         'imageKey': image_key,
         'validationResult': validation_result,
+        'location': {
+            'countryCode': geo_data.get('country_code', 'Unknown'),
+            'countryName': geo_data.get('country_name', 'Unknown'),
+            'region': geo_data.get('region', 'Unknown'),
+        },
+        'sourceIp': geo_data.get('source_ip', 'Unknown'),
         'ttl': int(datetime.utcnow().timestamp()) + (90 * 24 * 60 * 60)  # 90 days TTL
     }
     
@@ -223,8 +232,12 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
         image_key = body.get('imageKey')
         nafdac_number = body.get('nafdacNumber')
         product_name = body.get('productName')
+        geolocation = body.get('geolocation')
         
         logger.info(f"Processing verification: ID={verification_id}, NAFDAC={nafdac_number}, Product={product_name}")
+        
+        # Emit custom metrics for direct /validate calls (manual input from frontend)
+        # Note: geolocation metrics are handled by the workflow orchestrator
         
         if not verification_id or not timestamp:
             error_result = {
@@ -260,7 +273,8 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
             timestamp=timestamp,
             image_key=image_key,
             nafdac_number=nafdac_number,
-            validation_result=validation_result
+            validation_result=validation_result,
+            geolocation=geolocation
         )
         logger.info("Successfully stored in DynamoDB")
         
@@ -269,6 +283,7 @@ def lambda_handler(event: dict, context: LambdaContext) -> dict:
             'timestamp': timestamp,
             'imageKey': image_key,
             'nafdacNumber': nafdac_number,
+            'productName': product_name,
             'validationResult': validation_result
         }
         

@@ -13,6 +13,7 @@ logger = Logger()
 s3_client = boto3.client('s3')
 textract_client = boto3.client('textract')
 bedrock_client = boto3.client('bedrock-runtime')
+cloudwatch_client = boto3.client('cloudwatch')
 
 IMAGE_BUCKET = os.environ['IMAGE_BUCKET_NAME']
 
@@ -140,6 +141,18 @@ def extract_nafdac_number_ocr(s3_key: str, image_data: bytes = None) -> dict:
         
         # No NAFDAC found - use Bedrock for product name
         logger.warning("No NAFDAC found, using Bedrock with OCR context")
+        
+        try:
+            cloudwatch_client.put_metric_data(
+                Namespace='MedicineVerification',
+                MetricData=[{
+                    'MetricName': 'NafdacNotFound',
+                    'Value': 1,
+                    'Unit': 'Count'
+                }]
+            )
+        except Exception:
+            logger.warning("Failed to emit NafdacNotFound metric", exc_info=True)
         product_name = extract_product_name_with_bedrock(image_data, full_text) if image_data else None
         
         return {

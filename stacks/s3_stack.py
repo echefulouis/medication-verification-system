@@ -24,7 +24,6 @@ class S3Stack(Stack):
                 max_age=3000
             )],
             removal_policy=RemovalPolicy.RETAIN,
-            versioned=True,
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             encryption=s3.BucketEncryption.S3_MANAGED,
         )

@@ -1,0 +1,178 @@
+======================================================================
+  NAFDAC MEDICINE VERIFICATION SYSTEM — TEST ANALYSIS REPORT
+  Based on: test_report.txt + test_results.json
+  Endpoint: https://qaabu1fn66.execute-api.us-east-1.amazonaws.com/prod
+  Test Run Date: 2026-02-25
+  Total Test Duration: ~7.4 hours (26,801 seconds)
+======================================================================
+
+
+EXECUTIVE SUMMARY
+-----------------
+The system was tested against 220 pharmaceutical product images across
+two phases: image verification (POST /verify) and cross-validation
+(POST /validate). The system demonstrated strong product identification
+capability when operational, but suffered a significant mid-test outage
+that caused 60 consecutive failures, heavily skewing the overall error
+rate. When the system was stable, it performed well.
+
+
+1. OVERALL RESULTS
+------------------
+  Total images tested:         220
+  Successful responses:        157  (71.4%)
+  Failed / Errored:             63  (28.6%)
+
+  Of the 157 successful requests:
+    NAFDAC number extracted:    70  (44.6% of successes)
+    Product name identified:   134  (85.4% of successes — via Bedrock)
+    Greenbook match found:     116  (73.9% of successes)
+    Greenbook no match:         41  (26.1% of successes)
+
+  Average response time:       7.6s
+  Min response time:           6.8s
+  Max response time:           9.8s
+
+
+2. ERROR ANALYSIS
+-----------------
+All 63 errors fall into two categories:
+
+  a) Connection Pool Errors (60 images — images 5–99 range)
+     Error: HTTPSConnectionPool(host='qaabu1fn66.execute-api.us-east-1.amazonaws.com')
+     Root cause: The API Gateway endpoint became unreachable for an
+     extended period during the test run. This is consistent with a
+     Lambda cold start cascade, provisioned concurrency exhaustion on
+     the NAFDAC Validator container, or a transient API Gateway throttle.
+     The outage affected a contiguous block of ~60 images, suggesting
+     the testing script did not implement retry logic or backoff.
+
+  b) Request Timeouts (3 images)
+     image32.jpeg, image44.jpeg, image169.png
+     Root cause: Individual requests exceeded the client-side timeout.
+     Likely caused by the NAFDAC Validator Lambda (Selenium + Chrome)
+     hitting its 120s timeout while scraping the Greenbook website.
+
+  Recommendation: Add exponential backoff + retry (3 attempts) in the
+  testing script. The 60-image connection pool block would likely have
+  recovered with retries.
+
+
+3. OCR & NAFDAC EXTRACTION PERFORMANCE
+---------------------------------------
+  Images where NAFDAC number was extracted via OCR:  70 / 157  (44.6%)
+  Images where no NAFDAC was found (fell back to Bedrock): 87 / 157
+
+  NAFDAC number format distribution observed:
+    04-XXXX  (numeric prefix)    — most common
+    A4-XXXX  (alpha-numeric)     — common
+    B4-XXXX                      — common
+    C4-XXXX                      — present
+    A11-XXXX                     — present
+    84-XXXX  (likely 84 = B4?)   — present, none matched Greenbook
+    07-XXXX                      — rare, did not match Greenbook
+
+  Notable: All 84-XXXX prefixed numbers (84-0952, 84-3240, 84-2654,
+  84-5283, 84-6336, 84-6762) returned NOT FOUND in Greenbook. This
+  suggests either OCR misread "B4" as "84" (visually similar), or
+  these are genuinely unregistered numbers. Worth investigating.
+
+
+4. GREENBOOK VALIDATION RESULTS
+---------------------------------
+  Of 157 successful verifications:
+    Found in Greenbook:    116  (73.9%)
+    Not found:              41  (26.1%)
+
+  When NAFDAC number was extracted (70 cases):
+    Found:   ~40 (57%)
+    Not found: ~30 (43%)
+
+  When product name was used via Bedrock (87 cases):
+    Found:   ~76 (87%)
+    Not found: ~11 (13%)
+
+  Key insight: Product name search via Bedrock actually outperformed
+  direct NAFDAC number lookup in terms of Greenbook match rate. This
+  is because product name search returns partial matches, while NAFDAC
+  number lookup requires an exact match.
+
+
+5. PHASE 2 CROSS-VALIDATION FAILURE
+--------------------------------------
+  Phase 2 (POST /validate) re-checked all 69 unique NAFDAC numbers.
+  Result: 69 errors, 0 confirmations, 0 not-found responses.
+
+  This is a complete failure of Phase 2. The most likely cause is that
+  the /validate endpoint was invoked directly with only the NAFDAC
+  number, without the required verificationId and timestamp fields that
+  the NAFDAC Validator Lambda expects. The validator returns HTTP 400
+  for missing required fields, which the test script counted as errors.
+
+  Recommendation: Phase 2 should pass the full payload from Phase 1
+  (verificationId, timestamp, imageKey) alongside the nafdacNumber.
+
+
+6. NOTABLE FINDINGS
+--------------------
+  a) Inactive registrations detected
+     Several products matched in Greenbook with status "Inactive":
+       - Treviamet 50mg + 1000mg (B4-2084) — Inactive
+       - Trevia Tablets 50mg (B4-2085) — Inactive
+       - Ampicillin and Cloxacillin Capsules (C4-1157) — Inactive
+       - Softhealth Ampicillin and Cloxacillin (C4-1209) — Inactive
+       - Vilget-M 50mg/850mg (C4-1297) — Inactive
+     The system correctly returns these as "found" but the frontend
+     should surface the Inactive status as a warning to users.
+
+  b) Bedrock hallucinations / poor extractions
+     Several images returned unhelpful product names from Bedrock:
+       - "There is no drug or product name visible in the image..."
+       - "There is no clearly visible product name..."
+       - "Merck" (manufacturer name, not product name)
+       - "Rifabon" (not found in Greenbook — possible brand not registered)
+     These cases should be filtered before querying Greenbook to avoid
+     unnecessary scraping calls.
+
+  c) Duplicate NAFDAC numbers across images
+     A4-100035 appeared in both image13.jpeg and image33.jpeg, both
+     correctly matched to "Samjones Clarithromycin Tablets 500mg".
+     This confirms the deduplication logic in Phase 2 is working.
+
+  d) Response time consistency
+     Response times were very consistent: 6.8s–9.8s with avg 7.6s.
+     The tight range suggests the Selenium scraping time dominates and
+     is relatively stable. The 9.8s outlier (image135.jpeg) is within
+     acceptable bounds.
+
+
+7. DRUG CATEGORY BREAKDOWN (from successful verifications)
+-----------------------------------------------------------
+  Antidiabetics (Metformin, Glimepiride, Gliclazide, etc.):  ~45 images
+  Antimalarials (Artemether/Lumefantrine combinations):       ~30 images
+  Antibiotics (Amoxicillin, Ciprofloxacin, Clarithromycin):  ~25 images
+  Antifungals (Fluconazole):                                  ~10 images
+  Cardiovascular (Telmisartan, Amlodipine, Atenolol):        ~25 images
+  Other / Unidentified:                                       ~22 images
+
+  The dataset is heavily weighted toward antidiabetics and antimalarials,
+  which are high-priority drug categories for NAFDAC verification in Nigeria.
+
+
+8. RECOMMENDATIONS
+-------------------
+  1. Fix Phase 2 payload — pass full Phase 1 response fields to /validate
+  2. Add retry logic in testing script (3 retries, exponential backoff)
+  3. Investigate 84-XXXX OCR misreads — likely B4 being read as 84
+  4. Filter Bedrock responses that start with "There is no..." before
+     querying Greenbook to reduce unnecessary scraper invocations
+  5. Surface "Inactive" registration status prominently in the frontend
+  6. Consider caching Greenbook results for repeated NAFDAC numbers
+     to reduce Selenium cold start load (e.g., DynamoDB TTL cache)
+  7. The provisioned concurrency of 1 on the NAFDAC Validator may be
+     insufficient under concurrent load — monitor and scale if needed
+
+
+======================================================================
+  END OF REPORT
+======================================================================

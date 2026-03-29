@@ -1,0 +1,351 @@
+======================================================================
+  MEDICINE VERIFICATION — COMPREHENSIVE TEST REPORT
+  Endpoint: https://qaabu1fn66.execute-api.us-east-1.amazonaws.com/prod
+  Generated: 2026-02-25 04:07:16 UTC
+  Total time: 26801.4s
+======================================================================
+
+  PHASE 1: IMAGE VERIFICATION (POST /verify)
+  --------------------------------------------------
+  Total images:              220
+  Successful:                157
+  Errors:                    63
+  NAFDAC extracted (OCR):    70
+  NAFDAC not found:          87
+  Product identified:         134
+  Greenbook match:           116
+  Greenbook no match:        41
+  Unique NAFDAC numbers:     69
+  Request time (avg/min/max):   7.6s / 6.8s / 9.8s
+
+  PHASE 2: CROSS-VALIDATION (POST /validate)
+  --------------------------------------------------
+  Unique NAFDAC re-checked:  69
+  Confirmed in Greenbook:    0
+  Not found in Greenbook:    0
+  Errors:                    69
+
+  DETAILED RESULTS
+  --------------------------------------------------
+  Image                  NAFDAC         Conf%    Greenbook    Time    Product/Note
+  --------------------------------------------------------------------------------------------
+  image1.jpeg            04-7951        -        NOT FOUND    7.0s    
+  image10.jpeg           -              -        NOT FOUND    8.0s    (Bedrock: There is no drug or product )
+  image100.jpeg          -              -        FOUND        7.3s    Diamicron MR 60 mg Tablets
+  image101.jpeg          -              -        FOUND        8.7s    Flucamed Capsules
+  image102.jpeg          -              -        FOUND        8.1s    Berlin Fluconazole 200 mg Tablets
+  image103.jpeg          -              -        FOUND        7.2s    Diflucan 50 mg Capsules
+  image104.jpeg          04-1426        -        FOUND        7.3s    Diflucan 50 mg Capsules
+  image105.jpeg          -              -        FOUND        7.9s    Glucophage 1000 mg Tablet
+  image106.jpeg          -              -        NOT FOUND    7.4s    (Bedrock: Merck)
+  image107.jpeg          04-2450        -        FOUND        7.4s    Glanil 5 mg Caplet (check pack size
+  image108.jpeg          -              -        FOUND        7.9s    Glanil 5 mg Caplet (check pack size
+  image109.jpeg          04-8394        -        NOT FOUND    7.0s    
+  image11.jpeg           -              -        FOUND        8.6s    Ampicillin and Cloxacillin Capsules
+  image110.jpeg          -              -        FOUND        7.6s    Panfor SR 500 Tablets
+  image111.jpeg          04-0810        -        FOUND        7.2s    Diabetmin Tablet 500 mg
+  image112.jpeg          -              -        FOUND        7.6s    Diabetmin Tablet 500 mg
+  image113.jpeg          -              -        NOT FOUND    8.3s    (Bedrock: There is no clearly visible )
+  image114.jpeg          04-2853        -        FOUND        6.8s    Amaryl 2 mg Tablets
+  image115.jpeg          -              -        FOUND        8.2s    Diamet SR 1000 mg Tablet
+  image116.jpeg          A4-2608        -        FOUND        6.8s    Diamet SR 1000 mg Tablet
+  image117.jpeg          04-0744        -        NOT FOUND    7.1s    
+  image118.jpeg          -              -        NOT FOUND    7.4s    (Bedrock: Daonil)
+  image119.jpeg          -              -        FOUND        7.6s    Biophage 1000 mg Caplets
+  image12.jpeg           -              -        FOUND        7.8s    Ampicillin and Cloxacillin Capsules
+  image120.jpeg          -              -        FOUND        7.9s    Biophage 1000 mg Caplets
+  image121.jpeg          -              -        FOUND        7.8s    Vilget 50 mg Tablet
+  image122.jpeg          B4-9698        -        FOUND        7.5s    Vilget 50 mg Tablet
+  image123.jpeg          -              -        FOUND        8.0s    Treviamet 50 mg + 1000 mg Tablets
+  image124.jpeg          B4-2084        -        FOUND        7.5s    Treviamet 50 mg + 1000 mg Tablets
+  image125.jpeg          -              -        FOUND        8.2s    Empiget LT Tablet 10 mg + 5 mg
+  image126.jpeg          C4-1002        -        FOUND        7.0s    Empiget Tablet 25 mg_
+  image127.jpeg          B4-2085        -        FOUND        7.6s    Trevia Tablets 50 mg
+  image128.jpeg          -              -        FOUND        7.4s    Trevia Tablets 50 mg
+  image129.jpeg          B4-9403        -        NOT FOUND    6.9s    
+  image13.jpeg           A4-100035      -        FOUND        7.9s    Samjones Clarithromycin Tablets 500
+  image130.jpeg          -              -        FOUND        7.7s    Gliptus 50 mg Tablets_
+  image131.jpeg          -              -        NOT FOUND    7.7s    (Bedrock: Tenelisign-Met)
+  image132.jpeg          C4-0959        -        NOT FOUND    7.6s    
+  image133.jpeg          -              -        FOUND        7.9s    Melanov - M
+  image134.jpeg          B4-5971        -        NOT FOUND    6.9s    
+  image135.jpeg          -              -        FOUND        9.8s    Pionorm 30 Tablets (incomplete smpc
+  image136.jpeg          -              -        NOT FOUND    7.8s    (Bedrock: Pioglitazone)
+  image137.jpeg          A4-5610        -        FOUND        7.3s    Hobetic Tablet
+  image138.jpeg          -              -        FOUND        7.3s    Glimepiride 2 mg Tablet
+  image139.jpeg          -              -        FOUND        7.6s    Diamicron MR 60 mg Tablets
+  image14.jpeg           -              -        FOUND        8.2s    Berlin Clarithromycin Tablets
+  image140.jpeg          -              -        FOUND        7.5s    Diamicron MR 60 mg Tablets
+  image141.jpeg          -              -        NOT FOUND    7.8s    (Bedrock: Remicron)
+  image142.jpeg          -              -        NOT FOUND    8.0s    (Bedrock: Gliclazide)
+  image143.png           -              -        FOUND        7.8s    Ibasunate Capsules
+  image144.png           B4-4785        -        NOT FOUND    7.5s    
+  image145.png           04-9927        -        FOUND        7.2s    Lonart-DS Tablets
+  image146.png           -              -        FOUND        8.1s    Afemart Artemether & Lumefantrine 8
+  image147.png           -              -        FOUND        7.6s    Amatem 20/120 Softgel
+  image148.png           84-0952        -        NOT FOUND    6.9s    
+  image149.png           04-9495        -        FOUND        7.2s    P-Alaxin (Dihydroartemisinin 40 mg 
+  image15.jpeg           -              -        NOT FOUND    8.0s    (Bedrock: MOXITIN-500)
+  image150.png           B4-2872        -        FOUND        6.9s    Malanter DS Tablet
+  image151.png           84-3240        -        NOT FOUND    7.0s    
+  image152.png           -              -        FOUND        8.4s    Sumether 80/480 Tablets
+  image153.png           B4-2018        -        FOUND        7.0s    Sumether 80/480 Tablets
+  image154.png           -              -        FOUND        7.8s    Ravimal 20/120 Dispersible Tablet
+  image155.png           84-2654        -        NOT FOUND    7.1s    
+  image156.png           C4-1153        -        FOUND        7.2s    Artheluter 80/480 Tablets (duplicat
+  image157.png           -              -        FOUND        7.7s    Coartem 20/120 Dispersible Tablets
+  image158.png           A11-0292       -        FOUND        7.5s    Lokmal Dispersible Tablet
+  image159.png           -              -        FOUND        7.3s    Arenax Plus Tablets
+  image16.jpeg           -              -        FOUND        7.8s    Moxitin 500 Capsules_
+  image160.png           A4-2180        -        FOUND        7.5s    Arenax Plus Tablets
+  image161.png           A4-100810      -        FOUND        7.1s    P-Alaxin DS Tablet
+  image162.png           -              -        FOUND        7.5s    Fynale Forte SG 80/480 Capsule
+  image163.png           B4-2899        -        FOUND        6.9s    Surematem 80 mg/480 mg
+  image164.png           A11-100715     -        FOUND        7.1s    Plumal Artemether + Lumefantrine Ta
+  image165.png           -              -        NOT FOUND    7.7s    (Bedrock: LUMAFORCE)
+  image166.png           -              -        NOT FOUND    8.1s    (Bedrock: AMATEM® FTGEL)
+  image167.png           -              -        NOT FOUND    7.9s    (Bedrock: S24F030)
+  image168.png           -              -        FOUND        8.8s    Kesartem Tablets
+  image169.png           -              -        ERROR        -       ERR: Request timed out
+  image17.jpeg           -              -        FOUND        8.4s    Alben Tetracycline 250 mg Capsule_
+  image170.png           -              -        FOUND        7.8s    Coatal Dispersible Tablet 20/120 mg
+  image171.png           A4-1178        -        FOUND        7.2s    Coatal
+  image172.png           -              -        NOT FOUND    7.9s    (Bedrock: Artheget-EZ)
+  image173.png           A4-6238        -        FOUND        8.1s    Artheget EZ
+  image174.png           -              -        FOUND        8.5s    Artesunate - Amodiaquine Winthrop T
+  image175.png           04-7908        -        FOUND        7.2s    Camosunate Children Powder 50/150 m
+  image176.png           A11-0157       -        FOUND        7.3s    Lokmal QS Combi
+  image177.png           A4-4033        -        FOUND        7.2s    Havax Forte Tablets
+  image178.png           -              -        FOUND        7.4s    Co-Mal Forte Tablet
+  image179.png           84-5283        -        NOT FOUND    7.8s    
+  image18.jpeg           04-5819        -        NOT FOUND    6.8s    
+  image180.png           04-2911        -        FOUND        7.2s    Maldox Tablet
+  image181.png           -              -        FOUND        7.7s    Telduret 40/12.5 mg Tablets
+  image182.png           84-6336        -        NOT FOUND    7.2s    
+  image183.png           B4-6334        -        FOUND        7.2s    Telduret 40/12.5 mg Tablets
+  image184.png           -              -        FOUND        7.4s    Telduret 40/12.5 mg Tablets
+  image185.png           B4-7726        -        FOUND        6.9s    Arbitel 80 H Tablets
+  image186.png           -              -        FOUND        8.0s    Arbitel 40 Tablets
+  image187.png           -              -        NOT FOUND    7.6s    (Bedrock: Arbitel-80)
+  image188.png           A4-5989        -        FOUND        7.4s    Arbitel 80 Tablets
+  image189.png           A4-100642      -        FOUND        6.9s    Tamisart 80 mg Tablets
+  image19.jpeg           -              -        FOUND        7.6s    Fleming 1.2 g Injection Powder
+  image190.png           04-8442        -        FOUND        6.9s    Bondomet Tablet
+  image191.png           -              -        FOUND        8.1s    Afrab Amlodipine 10 mg Tablets
+  image192.png           A11-100744     -        FOUND        8.3s    MeCure's Amlodipine 10 mg Tablet
+  image193.png           -              -        FOUND        7.8s    Atenolol Tablet 100 mg
+  image194.png           B4-1651        -        FOUND        7.2s    Pocco Atenolol 50 Tablet
+  image195.png           C4-1616        -        FOUND        7.0s    Metoprolol 50 mg Tablets
+  image196.png           -              -        FOUND        7.8s    Afrab Lisinopril 5 mg Tablets
+  image197.png           B4-1650        -        FOUND        7.3s    Pocco Lisinopril 10 Tablet
+  image198.png           -              -        FOUND        7.3s    Aldomet 250 mg Tablets
+  image199.png           A4-5443        -        FOUND        6.9s    Aldomet 250 mg Tablets
+  image2.jpeg            -              -        FOUND        7.7s    Flucamed Capsules
+  image20.jpeg           B4-5194        -        NOT FOUND    6.9s    
+  image200.png           A4-100074      -        FOUND        7.3s    Lisinopril 10 mg Tablets (check pac
+  image201.png           A4-100145      -        FOUND        6.9s    Telmisartan 80 Tablet
+  image202.png           -              -        FOUND        7.8s    Concor 10 mg Tablet
+  image203.png           B4-7135        -        FOUND        8.4s    Concor 2.5 mg Tablet
+  image204.png           -              -        FOUND        8.3s    Telduret 40/12.5 mg Tablets
+  image205.png           B4-6335        -        FOUND        7.7s    Telduret 80/12.5 mg Tablets
+  image206.png           -              -        FOUND        7.7s    Cardiotan 40/10 mg
+  image207.png           A4-100431      -        FOUND        7.7s    Cardiotan 80/10 mg Tablets
+  image208.png           -              -        FOUND        7.3s    Replek Bromazepam 3 mg Tablets
+  image209.png           A4-7435        -        FOUND        7.3s    Talen 3 mg Tablets
+  image21.jpeg           -              -        FOUND        8.9s    Eden Aceclofenac Tablets
+  image210.png           -              -        FOUND        8.1s    Hytan 80 Tablet Telmisartan 80 mg
+  image211.png           -              -        FOUND        8.9s    Hytan 80 Tablet Telmisartan 80 mg
+  image212.png           A4-8542        -        NOT FOUND    6.9s    
+  image213.png           C4-0064        -        NOT FOUND    7.1s    
+  image214.png           07-2025        -        NOT FOUND    7.5s    
+  image215.png           C4-0066        -        NOT FOUND    7.2s    
+  image216.png           -              -        NOT FOUND    7.4s    (Bedrock: Nifecard)
+  image217.png           04-2179        -        NOT FOUND    7.1s    
+  image218.png           -              -        FOUND        8.0s    Afrab Amlodipine 10 mg Tablets
+  image219.png           84-6762        -        NOT FOUND    7.8s    
+  image22.jpeg           -              -        FOUND        8.0s    Eden Aceclofenac Tablets
+  image220.png           04-4499        -        NOT FOUND    7.2s    
+  image23.jpeg           -              -        NOT FOUND    8.6s    (Bedrock: Rifabon)
+  image24.jpeg           -              -        NOT FOUND    7.8s    (Bedrock: Rifabon)
+  image25.jpeg           -              -        FOUND        7.4s    Biocine Capsules
+  image26.jpeg           -              -        FOUND        8.4s    Biomedical Co-Trimoxazole Suspensio
+  image27.jpeg           -              -        FOUND        8.2s    Biomedical Co-Trimoxazole Suspensio
+  image28.jpeg           -              -        FOUND        8.2s    Ocefix for Oral Suspension
+  image29.jpeg           A4-5878        -        NOT FOUND    7.0s    
+  image3.jpeg            -              -        FOUND        7.2s    Rifampicin 150 mg+ Isoniazid 75 mg 
+  image30.jpeg           04-2481        -        FOUND        7.8s    Amoxil
+  image31.jpeg           -              -        FOUND        8.3s    Amoxil Powder for Oral Suspension
+  image32.jpeg           -              -        ERROR        -       ERR: Request timed out
+  image33.jpeg           A4-100035      -        FOUND        8.0s    Samjones Clarithromycin Tablets 500
+  image34.jpeg           -              -        FOUND        7.7s    Doxycap Capsules
+  image35.jpeg           -              -        FOUND        7.7s    Doxycap Capsules
+  image36.jpeg           -              -        FOUND        8.3s    Axcel Cefuroxime-250 Capsule
+  image37.jpeg           B4-0687        -        FOUND        6.9s    Aquaclav 625 Tablets
+  image38.jpeg           -              -        FOUND        8.2s    Aquaclav 1 G Tablets
+  image39.jpeg           -              -        FOUND        7.8s    Cefadox-200 Tablets
+  image4.jpeg            -              -        FOUND        8.7s    Rifampicin 150 mg+ Isoniazid 75 mg 
+  image40.jpeg           -              -        FOUND        7.4s    Ciprotab 500 Soflets
+  image41.jpeg           04-0723        -        FOUND        7.6s    Ciprotab 500 Soflets
+  image42.jpeg           04-2882        -        NOT FOUND    7.0s    
+  image43.jpeg           -              -        NOT FOUND    7.6s    (Bedrock: Amikap)
+  image44.jpeg           -              -        ERROR        -       ERR: Request timed out
+  image45.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image46.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image47.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image48.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image49.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image5.jpeg            -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image50.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image51.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image52.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image53.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image54.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image55.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image56.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image57.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image58.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image59.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image6.jpeg            -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image60.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image61.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image62.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image63.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image64.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image65.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image66.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image67.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image68.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image69.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image7.jpeg            -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image70.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image71.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image72.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image73.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image74.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image75.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image76.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image77.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image78.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image79.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image8.jpeg            -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image80.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image81.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image82.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image83.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image84.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image85.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image86.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image87.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image88.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image89.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image9.jpeg            -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image90.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image91.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image92.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image93.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image94.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image95.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image96.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image97.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image98.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+  image99.jpeg           -              -        ERROR        -       ERR: HTTPSConnectionPool(host='qaabu1fn6
+
+  UNIQUE NAFDAC NUMBERS
+  --------------------------------------------------
+  A4-100035      seen 2x — PARTIAL (one phase matched)
+  04-7951        seen 1x — UNVERIFIED
+  04-1426        seen 1x — PARTIAL (one phase matched)
+  04-2450        seen 1x — PARTIAL (one phase matched)
+  04-8394        seen 1x — UNVERIFIED
+  04-0810        seen 1x — PARTIAL (one phase matched)
+  04-2853        seen 1x — PARTIAL (one phase matched)
+  A4-2608        seen 1x — PARTIAL (one phase matched)
+  04-0744        seen 1x — UNVERIFIED
+  B4-9698        seen 1x — PARTIAL (one phase matched)
+  B4-2084        seen 1x — PARTIAL (one phase matched)
+  C4-1002        seen 1x — PARTIAL (one phase matched)
+  B4-2085        seen 1x — PARTIAL (one phase matched)
+  B4-9403        seen 1x — UNVERIFIED
+  C4-0959        seen 1x — UNVERIFIED
+  B4-5971        seen 1x — UNVERIFIED
+  A4-5610        seen 1x — PARTIAL (one phase matched)
+  B4-4785        seen 1x — UNVERIFIED
+  04-9927        seen 1x — PARTIAL (one phase matched)
+  84-0952        seen 1x — UNVERIFIED
+  04-9495        seen 1x — PARTIAL (one phase matched)
+  B4-2872        seen 1x — PARTIAL (one phase matched)
+  84-3240        seen 1x — UNVERIFIED
+  B4-2018        seen 1x — PARTIAL (one phase matched)
+  84-2654        seen 1x — UNVERIFIED
+  C4-1153        seen 1x — PARTIAL (one phase matched)
+  A11-0292       seen 1x — PARTIAL (one phase matched)
+  A4-2180        seen 1x — PARTIAL (one phase matched)
+  A4-100810      seen 1x — PARTIAL (one phase matched)
+  B4-2899        seen 1x — PARTIAL (one phase matched)
+  A11-100715     seen 1x — PARTIAL (one phase matched)
+  A4-1178        seen 1x — PARTIAL (one phase matched)
+  A4-6238        seen 1x — PARTIAL (one phase matched)
+  04-7908        seen 1x — PARTIAL (one phase matched)
+  A11-0157       seen 1x — PARTIAL (one phase matched)
+  A4-4033        seen 1x — PARTIAL (one phase matched)
+  84-5283        seen 1x — UNVERIFIED
+  04-5819        seen 1x — UNVERIFIED
+  04-2911        seen 1x — PARTIAL (one phase matched)
+  84-6336        seen 1x — UNVERIFIED
+  B4-6334        seen 1x — PARTIAL (one phase matched)
+  B4-7726        seen 1x — PARTIAL (one phase matched)
+  A4-5989        seen 1x — PARTIAL (one phase matched)
+  A4-100642      seen 1x — PARTIAL (one phase matched)
+  04-8442        seen 1x — PARTIAL (one phase matched)
+  A11-100744     seen 1x — PARTIAL (one phase matched)
+  B4-1651        seen 1x — PARTIAL (one phase matched)
+  C4-1616        seen 1x — PARTIAL (one phase matched)
+  B4-1650        seen 1x — PARTIAL (one phase matched)
+  A4-5443        seen 1x — PARTIAL (one phase matched)
+  B4-5194        seen 1x — UNVERIFIED
+  A4-100074      seen 1x — PARTIAL (one phase matched)
+  A4-100145      seen 1x — PARTIAL (one phase matched)
+  B4-7135        seen 1x — PARTIAL (one phase matched)
+  B4-6335        seen 1x — PARTIAL (one phase matched)
+  A4-100431      seen 1x — PARTIAL (one phase matched)
+  A4-7435        seen 1x — PARTIAL (one phase matched)
+  A4-8542        seen 1x — UNVERIFIED
+  C4-0064        seen 1x — UNVERIFIED
+  07-2025        seen 1x — UNVERIFIED
+  C4-0066        seen 1x — UNVERIFIED
+  04-2179        seen 1x — UNVERIFIED
+  84-6762        seen 1x — UNVERIFIED
+  04-4499        seen 1x — UNVERIFIED
+  A4-5878        seen 1x — UNVERIFIED
+  04-2481        seen 1x — PARTIAL (one phase matched)
+  B4-0687        seen 1x — PARTIAL (one phase matched)
+  04-0723        seen 1x — PARTIAL (one phase matched)
+  04-2882        seen 1x — UNVERIFIED
+
+  ERRORS
+  --------------------------------------------------
+  image169.png           Request timed out
+  image32.jpeg           Request timed out
+  image44.jpeg           Request timed out
+  image45.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image46.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image47.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image48.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image49.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image5.jpeg            HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image50.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image51.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image52.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image53.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image54.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image55.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image56.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image57.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image58.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image59.jpeg           HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  image6.jpeg            HTTPSConnectionPool(host='qaabu1fn66.execute-api.u
+  ... and 43 more errors
+
+======================================================================
+  END OF REPORT
+======================================================================

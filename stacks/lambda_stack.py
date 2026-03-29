@@ -7,7 +7,7 @@ from aws_cdk import (
     aws_iam as iam,
     aws_s3 as s3,
     aws_dynamodb as dynamodb,
-    aws_logs as logs
+    aws_logs as logs,
 )
 from constructs import Construct
 
@@ -29,8 +29,7 @@ class LambdaStack(Stack):
             code=_lambda.Code.from_asset('./layer/layer.zip'),
             compatible_runtimes=[_lambda.Runtime.PYTHON_3_12],
             description="Shared dependencies for Lambda functions"
-        )        
-        
+        )
 
         # ========================================
         # Image Processing & OCR Lambda
@@ -53,13 +52,13 @@ class LambdaStack(Stack):
             description="Processes base64 images, stores in S3, and extracts NAFDAC number via OCR",
             environment={
                 "POWERTOOLS_SERVICE_NAME": "ImageProcessor",
-                "POWERTOOLS_METRICS_NAMESPACE": "DrugVerification",
+                "POWERTOOLS_METRICS_NAMESPACE": "MedicineVerification",
                 "LOG_LEVEL": "INFO",
                 "IMAGE_BUCKET_NAME": image_bucket.bucket_name
             },
             layers=[layer]
         )
-        
+
         # Grant S3 permissions
         image_bucket.grant_read_write(self.image_processor)
         
@@ -83,6 +82,14 @@ class LambdaStack(Stack):
                 resources=[
                     f'arn:aws:bedrock:{self.region}::foundation-model/anthropic.claude-3-haiku-20240307-v1:0'
                 ]
+            )
+        )
+
+        # Grant CloudWatch PutMetricData for NafdacNotFound custom metric
+        self.image_processor.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=['cloudwatch:PutMetricData'],
+                resources=['*']
             )
         )
         
@@ -109,7 +116,7 @@ class LambdaStack(Stack):
             description="Validates NAFDAC numbers by scraping Greenbook using Selenium with Chrome",
             environment={
                 "POWERTOOLS_SERVICE_NAME": "NAFDACValidator",
-                "POWERTOOLS_METRICS_NAMESPACE": "DrugVerification",
+                "POWERTOOLS_METRICS_NAMESPACE": "MedicineVerification",
                 "LOG_LEVEL": "INFO",
                 "CHROME_BIN": "/opt/chrome-linux64/chrome",
                 "CHROMEDRIVER_BIN": "/opt/chromedriver-linux64/chromedriver",
@@ -121,6 +128,13 @@ class LambdaStack(Stack):
         # Grant permissions
         verification_table.grant_read_write_data(self.nafdac_validator)
         image_bucket.grant_read(self.nafdac_validator)
+
+        # Provisioned concurrency to avoid cold start timeouts (Selenium + Chrome is heavy)
+        validator_alias = self.nafdac_validator.add_alias(
+            "live",
+            provisioned_concurrent_executions=1,
+        )
+        self.nafdac_validator_alias = validator_alias
         
         # Note: Lambda Insights layer is not compatible with Docker container Lambdas
         # CloudWatch Logs are still available for monitoring
@@ -146,19 +160,32 @@ class LambdaStack(Stack):
             description="Orchestrates the complete verification workflow",
             environment={
                 "POWERTOOLS_SERVICE_NAME": "VerificationWorkflow",
-                "POWERTOOLS_METRICS_NAMESPACE": "DrugVerification",
+                "POWERTOOLS_METRICS_NAMESPACE": "MedicineVerification",
                 "LOG_LEVEL": "INFO",
                 "IMAGE_PROCESSOR_ARN": self.image_processor.function_arn,
-                "NAFDAC_VALIDATOR_ARN": self.nafdac_validator.function_arn
+                "NAFDAC_VALIDATOR_ARN": self.nafdac_validator_alias.function_arn
             },
             layers=[layer]
         )
         
         # Grant permissions to invoke other Lambdas
         self.image_processor.grant_invoke(self.verification_workflow)
-        self.nafdac_validator.grant_invoke(self.verification_workflow)
+        self.nafdac_validator_alias.grant_invoke(self.verification_workflow)
+        
+        # Grant CloudWatch PutMetricData for geolocation custom metrics
+        self.verification_workflow.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=['cloudwatch:PutMetricData'],
+                resources=['*']
+            )
+        )
         
         # Add CloudWatch Insights permissions
         self.verification_workflow.role.add_managed_policy(
             iam.ManagedPolicy.from_aws_managed_policy_name('CloudWatchLambdaInsightsExecutionRolePolicy')
         )
+
+        # Expose log groups for monitoring dashboard
+        self.image_processor_log_group = image_processor_log_group
+        self.nafdac_validator_log_group = validator_log_group
+        self.verification_workflow_log_group = workflow_log_group

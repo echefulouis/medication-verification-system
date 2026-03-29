@@ -3,10 +3,12 @@ import boto3
 import os
 from aws_lambda_powertools import Logger
 from aws_lambda_powertools.utilities.typing import LambdaContext
+from geolocation import resolve_geolocation
 
 logger = Logger()
 
 lambda_client = boto3.client('lambda')
+cloudwatch_client = boto3.client('cloudwatch')
 
 IMAGE_PROCESSOR_ARN = os.environ['IMAGE_PROCESSOR_ARN']
 NAFDAC_VALIDATOR_ARN = os.environ['NAFDAC_VALIDATOR_ARN']
@@ -42,6 +44,44 @@ def handler(event: dict, context: LambdaContext) -> dict:
         else:
             body = event
         
+        # Resolve geolocation from request
+        geo_data = resolve_geolocation(event)
+        logger.info("Resolved geolocation", extra={"geolocation": geo_data})
+
+        # Emit CloudWatch geolocation metrics (non-blocking)
+        try:
+            # Determine verification type
+            has_image = bool(body.get('image'))
+            has_manual_nafdac = bool(body.get('nafdacNumber'))
+            verification_type = 'ManualNafdacInput' if has_manual_nafdac and not has_image else 'ImageUpload'
+
+            metric_data = [
+                {
+                    'MetricName': 'VerificationRequestByCountry',
+                    'Dimensions': [{'Name': 'Country', 'Value': 'Nigeria' if geo_data['country_name'] == 'Nigeria' else 'Other Countries'}],
+                    'Value': 1,
+                    'Unit': 'Count'
+                },
+                {
+                    'MetricName': 'VerificationRequestByRegion',
+                    'Dimensions': [{'Name': 'Region', 'Value': geo_data['region']}],
+                    'Value': 1,
+                    'Unit': 'Count'
+                },
+                {
+                    'MetricName': verification_type,
+                    'Value': 1,
+                    'Unit': 'Count'
+                },
+            ]
+
+            cloudwatch_client.put_metric_data(
+                Namespace='MedicineVerification',
+                MetricData=metric_data
+            )
+        except Exception:
+            logger.warning("Failed to emit geolocation metrics", exc_info=True)
+
         # Step 1: Process image
         logger.info("Invoking Image Processor Lambda")
         image_processor_response = lambda_client.invoke(
@@ -63,10 +103,11 @@ def handler(event: dict, context: LambdaContext) -> dict:
         logger.info(f"Invoking NAFDAC Validator Lambda for {image_data.get('nafdacNumber')}")
         
         try:
+            validator_payload = {**image_data, 'geolocation': geo_data}
             validator_response = lambda_client.invoke(
                 FunctionName=NAFDAC_VALIDATOR_ARN,
                 InvocationType='RequestResponse',
-                Payload=json.dumps(image_data)
+                Payload=json.dumps(validator_payload)
             )
             
             # Check for function errors

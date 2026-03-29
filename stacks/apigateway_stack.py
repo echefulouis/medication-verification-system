@@ -20,8 +20,8 @@ class ApiGatewayStack(Stack):
         super().__init__(scope, construct_id, **kwargs)
 
         self.api = apigateway.RestApi(
-            self, "DrugVerificationAPI",
-            rest_api_name="Drug Verification API",
+            self, "MedicineVerificationAPI",
+            rest_api_name="Medicine Verification API",
             deploy_options=apigateway.StageOptions(
                 stage_name="prod",
                 tracing_enabled=True,
